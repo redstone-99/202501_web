@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>인덱스 페이지 입니다2</h1>
+	<p>내 이름은 : <strong>정홍석</strong></p>
+	<!-- tomcat 서버상에서의 절대경로를 이용해서 이미지 로딩 시키기 -->
+	<img src="../images/kim1.png">
+	<!-- 현재 위치를 기준으로 한 상대경로를 이용해서 이미지 로딩 시키기 -->
+	<img src="/Hello/images/7.jpg">
+	<!-- 웹상에서의 절대경로를 이용해서 이미지 로딩 시키기 -->
+	<img src="http://localhost:8888/Hello/images/7.jpg">
+	<ul>
+		<li><a href="../index.html">인덱스</a></li>
+		<li><a href="/Hello/index.html">인덱스</a></li>
+		<li><a href="http://localhost:8888/Hello/index.html">인덱스</a></li>
+		<!-- welcome 페이지는 따로 명시 하지 않으면 자동으로 index.html 페이지가 응답된다 -->
+		<li><a href="http://localhost:8888/Hello">인덱스</a></li>
+		<li><a href="/Hello/">인덱스</a></li>
+	</ul>
+</body>
+</html>
