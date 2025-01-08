@@ -1,4 +1,4 @@
-package test.member.dao;
+package test.food.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,14 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import test.member.dto.MemberDto;
+import test.food.dto.FoodDto;
 import test.util.DbcpBean;
 
-public class MemberDao {
+public class FoodDao {
 	
-	// 매개변수로 전달되는 회원 한 명의 정보를 가져오는 메소드
-    public MemberDto getData(int num) {
-    	MemberDto dto = null;
+	// 매개변수로 전달되는 맛집 1개의 정보를 가져오는 메소드
+    public FoodDto getData(int num) {
+    	FoodDto dto = null;
     	
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -23,8 +23,8 @@ public class MemberDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                SELECT num, name, addr
-                FROM member
+                SELECT num, type, name, price
+                FROM food
                 WHERE num = ?
             """;
             pstmt = conn.prepareStatement(sql);
@@ -32,10 +32,11 @@ public class MemberDao {
             rs = pstmt.executeQuery();
             
             if (rs.next()) {
-            	dto = new MemberDto();
+            	dto = new FoodDto();
             	dto.setNum(rs.getInt("num"));
+            	dto.setType(rs.getString("type"));
             	dto.setName(rs.getString("name"));
-            	dto.setAddr(rs.getString("addr"));
+            	dto.setPrice(rs.getInt("price"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,8 +53,8 @@ public class MemberDao {
         return dto;
     }
 
-    // 회원 정보를 업데이트하고 성공 여부를 리턴하는 메소드
-    public boolean update(MemberDto member) {
+    // 맛집 정보를 업데이트하고 성공 여부를 리턴하는 메소드
+    public boolean update(FoodDto food) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int rowCount = 0;
@@ -62,15 +63,16 @@ public class MemberDao {
             conn = new DbcpBean().getConn();
             //실행할 미완성의 sql 문
             String sql = """
-                UPDATE member
-                SET name = ?, addr = ?
+                UPDATE food
+                SET type = ?, name = ?, price = ?
                 WHERE num = ?
             """;
             pstmt = conn.prepareStatement(sql);
             // ? 에 값을 여기서 바인딩한다.
-            pstmt.setString(1, member.getName());
-            pstmt.setString(2, member.getAddr());
-            pstmt.setInt(3, member.getNum());
+            pstmt.setString(1, food.getType());
+            pstmt.setString(2, food.getName());
+            pstmt.setInt(3, food.getPrice());
+            pstmt.setInt(4, food.getNum());
             
             rowCount = pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -87,7 +89,7 @@ public class MemberDao {
         return rowCount > 0;
     }
 	
-	//회원 한명의 정보를 삭제하고 성공 여부를 리턴하는 메소드
+	//맛집 1개의 정보를 삭제하고 성공 여부를 리턴하는 메소드
 	public boolean delete(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -96,10 +98,10 @@ public class MemberDao {
 			conn = new DbcpBean().getConn();
 			//실행할 미완성의 sql 문
 			String sql = """
-				DELETE FROM member
+				DELETE FROM food
 				WHERE num=?			
 			""";
-			pstmt = conn.prepareStatement(sql);
+			pstmt = conn.prepareStatement(sql);	
 			// ? 에 값을 여기서 바인딩한다.
 			pstmt.setInt(1, num);
 			// sql 문 실행하고 변화된 row 의 갯수 리턴받기
@@ -122,8 +124,8 @@ public class MemberDao {
 		}
 	}
 	
-	//회원 한명의 정보를 추가하고 성공 여부를 리턴하는 메소드
-	public boolean insert(MemberDto dto) {
+	//맛집 1개의 정보를 추가하고 성공 여부를 리턴하는 메소드
+	public boolean insert(FoodDto dto) {
 		
 		Connection conn=null;
 		PreparedStatement pstmt=null;
@@ -132,14 +134,15 @@ public class MemberDao {
 			conn=new DbcpBean().getConn();
 			//실행할 미완성의 sql 문
 			String sql="""
-				INSERT INTO member
-				(num, name, addr)
-				VALUES(member_seq.NEXTVAL, ?, ?)
+				INSERT INTO food
+				(num, type, name, price)
+				VALUES(food_seq.NEXTVAL, ?, ?, ?)
 			""";
 			pstmt=conn.prepareStatement(sql);
 			// ? 에 값을 여기서 바인딩한다.
-			pstmt.setString(1, dto.getName());
-			pstmt.setString(2, dto.getAddr());
+			pstmt.setString(1, dto.getType());
+			pstmt.setString(2, dto.getName());
+			pstmt.setInt(3, dto.getPrice());
 			// sql 문 실행하고 변화된 row 의 갯수 리턴받기
 			rowCount=pstmt.executeUpdate();
 		}catch(Exception e) {
@@ -157,9 +160,9 @@ public class MemberDao {
 		}
 	}// insert()
 	
-	//회원 목록을 리턴하는 메소드 
-	public List<MemberDto> getList(){
-		List<MemberDto> list=new ArrayList<>();
+	//맛집 목록을 리턴하는 메소드 
+	public List<FoodDto> getList(){
+		List<FoodDto> list=new ArrayList<>();
 		
 		Connection conn=null;
 		PreparedStatement pstmt=null;
@@ -169,8 +172,8 @@ public class MemberDao {
 			conn=new DbcpBean().getConn();
 			//실행할 sql 문 작성
 			String sql="""
-				SELECT num, name, addr
-				FROM member
+				SELECT num, type, name, price
+				FROM food
 				ORDER BY num ASC
 			""";
 			pstmt=conn.prepareStatement(sql);
@@ -180,11 +183,12 @@ public class MemberDao {
 			rs=pstmt.executeQuery();
 			while(rs.next()) {
 				// 커서가 위치한 곳의 칼럼 내용을 읽어와서 dto 에 저장
-				MemberDto dto=new MemberDto();
+				FoodDto dto=new FoodDto();
 				dto.setNum(rs.getInt("num"));
+				dto.setType(rs.getString("type"));
 				dto.setName(rs.getString("name"));
-				dto.setAddr(rs.getString("addr"));
-				//회원 한명의 정보가 담긴 dto 를 List 객체에 누적 시키기
+				dto.setPrice(rs.getInt("price"));
+				//맛집 정보 1개가 담긴 dto 를 List 객체에 누적 시키기
 				list.add(dto);
 			}
 		}catch (Exception e) {
