@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>/vue2/test08.html</title>
+</head>
+<body>
+	<div class="container" id="app">
+		<table>
+			<thead>
+				<tr>
+					<th>번호</th>
+					<th>이름</th>
+					<th>주소</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- v-for로 members 배열을 순회하여 테이블에 각 항목을 추가 -->
+				<tr v-for="tmp in members">
+					<td>{{ tmp.num }}</td>
+					<td>{{ tmp.name }}</td>
+					<td>{{ tmp.addr }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- vue js 로딩하기 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script>
+		new Vue({
+			el:"#app",
+			data:{
+				members:[
+					{num:1, name:"홍석", addr:"수원"},
+					{num:2, name:"김구라", addr:"노량진"},
+					{num:3, name:"구라", addr:"노량"}
+				]
+			}
+		});
+	</script>
+</body>
+</html>
