@@ -24,17 +24,18 @@
 			</div>
 			<div class="mb-2">
 				<label class="form-label" for="pwd">비밀번호</label>
-				<input :class="pwdInputClass"
-					v-model="pwd" class="form-control" type="password" name="pwd" id="pwd"
-					 @input="checkPwd" />
+				<input v-model="pwd"
+					@input="onPwdInput"
+					:class="{'is-valid': isPwdValid, 'is-invalid': !isPwdValid && isPwdDirty}"
+					class="form-control" type="password" name="pwd" id="pwd"/>
 				<small class="form-text">특수 문자를 하나 이상 조합하세요.</small>
 				<div class="invalid-feedback">비밀 번호를 확인 하세요</div>
 			</div>
 			<div class="mb-2">
 				<label class="form-label" for="pwd2">비밀번호 확인</label>
-				<input :class="pwd2InputClass"
-					v-model="pwd2" class="form-control" type="password"  id="pwd2"
-					@input="checkPwd" />
+				<input v-model="pwd2"
+					@input="onPwdInput"
+					class="form-control" type="password"  id="pwd2"/>
 			</div>		
 			<div class="mb-2">
 				<label class="form-label" for="email">이메일</label>
@@ -54,45 +55,33 @@
 				isIdValid:false,
 				isIdDirty:false,
 				isPwdValid:false,
-				isPwdMatch:false,
+				isPwdDirty:false,
 				isEmailValid:false,
 				isEmailDirty:false,
 				pwd:"",
 				pwd2:""
 			},
 			
-			computed: {
-				// 비밀번호 입력 필드에 대한 클래스 반환
-				pwdInputClass() {
-					return {
-						'is-valid': this.isPwdValid,
-						'is-invalid': !this.isPwdValid
-					};
-				},
-				// 비밀번호 확인 입력 필드에 대한 클래스 반환
-				pwd2InputClass() {
-					return {
-						'is-valid': this.isPwdMatch,
-						'is-invalid': !this.isPwdMatch
-					};
-				}
-			},
-			
 			methods:{
-				
 				// 비밀번호 검증 함수
-				checkPwd() {
-					const reg_pwd = /[\W]/;  // 특수문자 검증 정규표현식
-
-					// 비밀번호가 정규 표현식을 만족하는지 검사
-					if (!reg_pwd.test(this.pwd) || !reg_pwd.test(this.pwd2)) {
-						this.isPwdValid = false;
-					} else {
-						this.isPwdValid = true;
+				onPwdInput() {
+					this.isPwdDirty=true;
+					//비밀 번호를 검증할 정규 표현식(특수문자 포함여부)
+					const reg_pwd=/[\W]/;
+					//일단 정규표현식을 만족하는지 확인해서 만족하지 않으면 함수를 여기서 종료
+					//만일 첫번째 비밀번호가 정규표현식을 통과하지 못하거나 또는 두번째 비밀번호가 정규표현식을 통과하지 못한다면
+					if( !reg_pwd.test(this.pwd) || !reg_pwd.test(this.pwd2) ){
+						this.isPwdValid=false;
+						return;
 					}
-
-					// 비밀번호와 비밀번호 확인이 일치하는지 확인
-					this.isPwdMatch = this.pwd === this.pwd2;
+					//위를 통과 했다면 여기서는 비밀번호가 같은지 여부를 알아내서 유효성 여부에 반영한다.
+					if(this.pwd == this.pwd2){
+						//비밀번호가 유효 하다는 의미에서 true 를 넣어준다.
+						this.isPwdValid=true;
+					}else{
+						//비밀번호가 유효 하지 않다는 의미에서 false 를 넣어준다.
+						this.isPwdValid=false;
+					}
 				},
 				
 				onEmailInput(e){
