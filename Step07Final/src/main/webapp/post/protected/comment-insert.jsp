@@ -5,11 +5,8 @@
 <%@ page language="java" contentType="application/json; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	//세션에 저장된 정보를 이용해서
 	SessionDto sessionDto=(SessionDto)session.getAttribute("sessionDto");
-	//댓글 작성자의 username 을 얻어낸다
 	String writer=sessionDto.getUserName();
-	//fetch() 를 이용해서 전송되는 정보를 추출한다.
 
 	long postNum = Long.parseLong(request.getParameter("postNum"));
 	String targetWriter = request.getParameter("targetWriter");
@@ -44,7 +41,7 @@
 	}
 	//DB 에 저장된 정보를 다시 읽어오기
 	dto=dao.getData(num);
-	//Gson 객체를 이용해서 CommentDto 에 저장된 정보를 json 문자열로 변환해서 응답한다.
+	
 	Gson gson=new Gson();
 %>
 <%=gson.toJson(dto) %>
